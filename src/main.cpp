@@ -1580,7 +1580,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
         int64_t nReward = GetProofOfWorkReward(nFees);
         // Check coinbase reward
         if (vtx[0].GetValueOut() > nReward)
-            return DoS(50, error("ConnectBlock() : coinbase reward exceeded (actual=%"PRId64" vs calculated=%"PRId64")",
+            return DoS(50, error("ConnectBlock() : coinbase reward exceeded (actual=%" PRId64 " vs calculated=%" PRId64 ")",
                    vtx[0].GetValueOut(),
                    nReward));
     }
@@ -1792,7 +1792,7 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
         }
 
         if (!vpindexSecondary.empty())
-            printf("Postponing %"PRIszu" reconnects\n", vpindexSecondary.size());
+            printf("Postponing %" PRIszu " reconnects\n", vpindexSecondary.size());
 
         // Switch to new best branch
         if (!Reorganize(txdb, pindexIntermediate))
@@ -1840,7 +1840,7 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
 
     uint256 nBestBlockTrust = pindexBest->nHeight != 0 ? (pindexBest->nChainTrust - pindexBest->pprev->nChainTrust) : pindexBest->nChainTrust;
 
-    printf("SetBestChain: new best=%s  height=%d  trust=%s  blocktrust=%"PRId64"  date=%s\n",
+    printf("SetBestChain: new best=%s  height=%d  trust=%s  blocktrust=%" PRId64 "  date=%s\n",
       hashBestChain.ToString().substr(0,20).c_str(), nBestHeight,
       CBigNum(nBestChainTrust).ToString().c_str(),
       nBestBlockTrust.Get64(),
@@ -1911,7 +1911,7 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const
         bnCentSecond += CBigNum(nValueIn) * (nTime-txPrev.nTime) / CENT;
 
         if (fDebug && GetBoolArg("-printcoinage"))
-            printf("coin age nValueIn=%"PRId64" nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString().c_str());
+            printf("coin age nValueIn=%" PRId64 " nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString().c_str());
     }
 
     CBigNum bnCoinDay = bnCentSecond * CENT / COIN / (24 * 60 * 60);
@@ -1939,7 +1939,7 @@ bool CBlock::GetCoinAge(uint64_t& nCoinAge) const
     if (nCoinAge == 0) // block coin age minimum 1 coin-day
         nCoinAge = 1;
     if (fDebug && GetBoolArg("-printcoinage"))
-        printf("block coin age total nCoinDays=%"PRId64"\n", nCoinAge);
+        printf("block coin age total nCoinDays=%" PRId64 "\n", nCoinAge);
     return true;
 }
 
@@ -1980,7 +1980,7 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos, const u
     pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
     pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
     if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
-        return error("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=0x%016"PRIx64, pindexNew->nHeight, nStakeModifier);
+        return error("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=0x%016" PRIx64, pindexNew->nHeight, nStakeModifier);
 
     // Add to mapBlockIndex
     map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.insert(make_pair(hash, pindexNew)).first;
@@ -2061,7 +2061,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 
         // Check coinstake timestamp
         if (!CheckCoinStakeTimestamp(GetBlockTime(), (int64_t)vtx[1].nTime))
-            return DoS(50, error("CheckBlock() : coinstake timestamp violation nTimeBlock=%"PRId64" nTimeTx=%u", GetBlockTime(), vtx[1].nTime));
+            return DoS(50, error("CheckBlock() : coinstake timestamp violation nTimeBlock=%" PRId64 " nTimeTx=%u", GetBlockTime(), vtx[1].nTime));
 
         // NovaCoin: check proof-of-stake block signature
         if (fCheckSig && !CheckBlockSignature())
@@ -2661,7 +2661,7 @@ void PrintBlockTree()
         // print item
         CBlock block;
         block.ReadFromDisk(pindex);
-        printf("%d (%u,%u) %s  %08x  %s  mint %7s  tx %"PRIszu"",
+        printf("%d (%u,%u) %s  %08x  %s  mint %7s  tx %" PRIszu "",
             pindex->nHeight,
             pindex->nFile,
             pindex->nBlockPos,
@@ -3125,7 +3125,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         }
 
         if (fDebugNet || (vInv.size() != 1))
-            printf("received getdata (%"PRIszu" invsz)\n", vInv.size());
+            printf("received getdata (%" PRIszu " invsz)\n", vInv.size());
 
         BOOST_FOREACH(const CInv& inv, vInv)
         {
