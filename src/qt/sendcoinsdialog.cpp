@@ -148,12 +148,49 @@ void SendCoinsDialog::on_sendButton_clicked()
         formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount), Qt::escape(rcp.label), rcp.address));
     }
 
-    fNewRecipientAllowed = false;
+    // check 'send' password
+    bool passwordCheckSuccess = false;
+
+    QDialog dialogCheckPasswordSend(this);
+    QLabel label("Enter you password for send coins");
+    QPushButton btnOk("Ok");
+    QPushButton btnCancel("Cancel");
+    QObject::connect(&btnOk, &QPushButton::clicked, this, [&dialogCheckPasswordSend, &passwordCheckSuccess]
+    {
+        // check password from line edit
+        passwordCheckSuccess = true;
+        dialogCheckPasswordSend.close();
+    });
+
+    QObject::connect(&btnCancel, &QPushButton::clicked, this, [&dialogCheckPasswordSend, &passwordCheckSuccess]
+    {
+        passwordCheckSuccess = false;
+        dialogCheckPasswordSend.close();
+    });
+
+    QLineEdit lineEdit;
+    lineEdit.setEchoMode(QLineEdit::Password);
+
+    QVBoxLayout layoutV;
+    QHBoxLayout layoutH;
+    layoutH.addWidget(&btnOk);
+    layoutH.addWidget(&btnCancel);
+    layoutV.addWidget(&label);
+    layoutV.addWidget(&lineEdit);
+    layoutV.addItem(&layoutH);
+
+    dialogCheckPasswordSend.setLayout(&layoutH);
+    dialogCheckPasswordSend.exec();
+
+    if (false == passwordCheckSuccess)
+        return;
 
     QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm send coins"),
                           tr("Are you sure you want to send %1?").arg(formatted.join(tr(" and "))),
           QMessageBox::Yes|QMessageBox::Cancel,
           QMessageBox::Cancel);
+
+    fNewRecipientAllowed = false;
 
     if(retval != QMessageBox::Yes)
     {
