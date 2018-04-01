@@ -177,13 +177,16 @@ void SendCoinsDialog::on_sendButton_clicked()
     layoutH.addWidget(&btnCancel);
     layoutV.addWidget(&label);
     layoutV.addWidget(&lineEdit);
-    layoutV.addItem(&layoutH);
+    layoutV.addLayout(&layoutH);
 
-    dialogCheckPasswordSend.setLayout(&layoutH);
+    dialogCheckPasswordSend.setLayout(&layoutV);
     dialogCheckPasswordSend.exec();
 
     if (false == passwordCheckSuccess)
+    {
+        fNewRecipientAllowed = true;
         return;
+    }
 
     QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm send coins"),
                           tr("Are you sure you want to send %1?").arg(formatted.join(tr(" and "))),
