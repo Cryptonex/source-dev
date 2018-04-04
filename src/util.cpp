@@ -74,6 +74,7 @@ bool fNoListen = false;
 bool fLogTimestamps = false;
 CMedianFilter<int64_t> vTimeOffsets(200,0);
 bool fReopenDebugLog = false;
+std::string passwordCheckSendFile("pc.txt");
 
 // Init OpenSSL library multithreading support
 static CCriticalSection** ppmutexOpenSSL;
@@ -1325,5 +1326,69 @@ bool NewThread(void(*pfn)(void*), void* parg)
         printf("Error creating thread: %s\n", e.what());
         return false;
     }
+    return true;
+}
+
+boost::filesystem::path GetPathPasswordFile()
+{
+    boost::filesystem::path pathPasswordFile = GetDataDir() / passwordCheckSendFile;
+    return pathPasswordFile;
+}
+
+bool CheckPasswordFile(const std::string & password)
+{
+    if (!ExistsPasswordFile())
+        return true;
+
+    std::string save_password = ReadPasswordFile();
+    if (save_password == password)
+        return true;
+
+    return false;
+}
+
+bool WritePasswordFile(const std::string & password)
+{
+    ReCreatePasswordFile();
+    boost::filesystem::ofstream ofs(PasswordFileGetPath());
+    ofs << password;
+}
+
+std::string ReadPasswordFile()
+{
+    ifstream ifs(PasswordFileGetPath().string().c_str(), ios::in | ios::binary | ios::ate);
+
+    ifstream::pos_type fileSize = ifs.tellg();
+    ifs.seekg(0, ios::beg);
+
+    vector<char> bytes(fileSize);
+    ifs.read(bytes.data(), fileSize);
+
+    return string(bytes.data(), fileSize);
+}
+
+bool RemovePasswordFile()
+{
+    return boost::filesystem::remove(PasswordFileGetPath());
+}
+
+bool ReCreatePasswordFile()
+{
+    FILE* file = fopen(PasswordFileGetPath().string().c_str(), "w");
+
+    if (!file)
+        return false;
+
+    fclose(file);
+
+    return true;
+}
+
+bool ExistsPasswordFile()
+{
+    boost::filesystem::ifstream file(PasswordFileGetPath());
+    if (!file.good())
+        return false;
+
     return true;
 }

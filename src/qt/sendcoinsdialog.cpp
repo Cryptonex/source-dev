@@ -6,6 +6,8 @@
 #include "addresstablemodel.h"
 #include "addressbookpage.h"
 
+#include "util.h"
+
 #include "bitcoinunits.h"
 #include "addressbookpage.h"
 #include "optionsmodel.h"
@@ -155,21 +157,25 @@ void SendCoinsDialog::on_sendButton_clicked()
     QLabel label("Enter you password for send coins");
     QPushButton btnOk("Ok");
     QPushButton btnCancel("Cancel");
-    QObject::connect(&btnOk, &QPushButton::clicked, this, [&dialogCheckPasswordSend, &passwordCheckSuccess]
+
+    QLineEdit lineEdit;
+    lineEdit.setEchoMode(QLineEdit::Password);
+
+    QObject::connect(&btnOk, &QPushButton::clicked, this, [&dialogCheckPasswordSend, &passwordCheckSuccess, &lineEdit]
     {
         // check password from line edit
-        passwordCheckSuccess = true;
+        if (CheckPasswordFile(lineEdit.text().toStdString()))
+            passwordCheckSuccess = true;
+
         dialogCheckPasswordSend.close();
     });
 
     QObject::connect(&btnCancel, &QPushButton::clicked, this, [&dialogCheckPasswordSend, &passwordCheckSuccess]
     {
         passwordCheckSuccess = false;
+
         dialogCheckPasswordSend.close();
     });
-
-    QLineEdit lineEdit;
-    lineEdit.setEchoMode(QLineEdit::Password);
 
     QVBoxLayout layoutV;
     QHBoxLayout layoutH;
