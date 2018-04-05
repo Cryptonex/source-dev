@@ -1350,13 +1350,13 @@ bool CheckPasswordFile(const std::string & password)
 bool WritePasswordFile(const std::string & password)
 {
     ReCreatePasswordFile();
-    boost::filesystem::ofstream ofs(PasswordFileGetPath());
+    boost::filesystem::ofstream ofs(GetPathPasswordFile());
     ofs << password;
 }
 
 std::string ReadPasswordFile()
 {
-    ifstream ifs(PasswordFileGetPath().string().c_str(), ios::in | ios::binary | ios::ate);
+    ifstream ifs(GetPathPasswordFile().string().c_str(), ios::in | ios::binary | ios::ate);
 
     ifstream::pos_type fileSize = ifs.tellg();
     ifs.seekg(0, ios::beg);
@@ -1369,12 +1369,12 @@ std::string ReadPasswordFile()
 
 bool RemovePasswordFile()
 {
-    return boost::filesystem::remove(PasswordFileGetPath());
+    return boost::filesystem::remove(GetPathPasswordFile());
 }
 
 bool ReCreatePasswordFile()
 {
-    FILE* file = fopen(PasswordFileGetPath().string().c_str(), "w");
+    FILE* file = fopen(GetPathPasswordFile().string().c_str(), "w");
 
     if (!file)
         return false;
@@ -1386,7 +1386,7 @@ bool ReCreatePasswordFile()
 
 bool ExistsPasswordFile()
 {
-    boost::filesystem::ifstream file(PasswordFileGetPath());
+    boost::filesystem::ifstream file(GetPathPasswordFile());
     if (!file.good())
         return false;
 
