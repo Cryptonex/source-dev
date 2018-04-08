@@ -43,6 +43,64 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     connect(ui->connectSocks, SIGNAL(toggled(bool)), ui->socksVersion, SLOT(setEnabled(bool)));
     connect(ui->connectSocks, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning_Proxy()));
 
+    connect(ui->checkPassworForSendCoin, &QCheckBox::clicked, this, [&]
+    {
+        bool enableCheckPassword = ui->checkPassworForSendCoin->isChecked();
+        bool successCheckPassword = false;
+
+        QDialog dialogCheckPasswordSend(this);
+        QLabel label("Enter you password for send coins");
+        QPushButton btnOk("Ok");
+        QPushButton btnCancel("Cancel");
+
+        QLineEdit lineEditPassword;
+        lineEditPassword.setEchoMode(QLineEdit::Password);
+
+        QLineEdit lineEditConfirmPassword;
+        lineEditConfirmPassword.setEchoMode(QLineEdit::Password);
+
+        QObject::connect(&btnOk, &QPushButton::clicked, this, [&]
+        {
+            if (enableCheckPassword)
+            {
+               if (lineEditPassword.text() == lineEditConfirmPassword.text())
+               {
+                   if (this->model->setCheckPasswordOnSendCoinsValue(lineEditPassword.text()))
+                       successCheckPassword = true;
+               }
+            }
+            else
+            {
+               if (lineEditPassword.text() == this->model->getCheckPasswordOnSendCoinsValue())
+               {
+                   successCheckPassword = true;
+               }
+            }
+            dialogCheckPasswordSend.close();
+        });
+
+        QObject::connect(&btnCancel, &QPushButton::clicked, this, [&]
+        {
+            dialogCheckPasswordSend.close();
+        });
+
+        QVBoxLayout layoutV;
+        QHBoxLayout layoutH;
+        layoutH.addWidget(&btnOk);
+        layoutH.addWidget(&btnCancel);
+        layoutV.addWidget(&label);
+        layoutV.addWidget(&lineEditPassword);
+        if (enableCheckPassword)
+            layoutV.addWidget(&lineEditConfirmPassword);
+        layoutV.addLayout(&layoutH);
+
+        dialogCheckPasswordSend.setLayout(&layoutV);
+        dialogCheckPasswordSend.exec();
+
+        if (!successCheckPassword)
+            ui->checkPassworForSendCoin->toggle();
+    });
+
     ui->proxyIp->installEventFilter(this);
 
     /* Window elements init */
@@ -143,6 +201,9 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->minimizeToTray, OptionsModel::MinimizeToTray);
     mapper->addMapping(ui->minimizeOnClose, OptionsModel::MinimizeOnClose);
 #endif
+
+    /* CheckPasswordOnSendCoins */
+    mapper->addMapping(ui->checkPassworForSendCoin, OptionsModel::CheckPasswordOnSendCoins);
 
     /* Display */
     mapper->addMapping(ui->lang, OptionsModel::Language);

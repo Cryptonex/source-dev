@@ -31,6 +31,8 @@ public:
         DisplayAddresses,  // bool
         Language,          // QString
         CoinControlFeatures, // bool
+        CheckPasswordOnSendCoins, // bool
+        CheckPasswordOnSendCoinsValue, // QString
         OptionIDRowCount,
     };
 
@@ -49,6 +51,9 @@ public:
     bool getDisplayAddresses();
     bool getCoinControlFeatures();
     QString getLanguage() { return language; }
+    bool getCheckPasswordOnSendCoins();
+    QString getCheckPasswordOnSendCoinsValue();
+    bool setCheckPasswordOnSendCoinsValue(const QString & value);
 
 private:
     int nDisplayUnit;
@@ -57,6 +62,8 @@ private:
     bool fMinimizeOnClose;
     bool fCoinControlFeatures;
     QString language;
+    bool fCheckPasswordOnSendCoins;
+    QString sCheckPasswordOnSendCoinsValue;
 
 signals:
     void displayUnitChanged(int unit);

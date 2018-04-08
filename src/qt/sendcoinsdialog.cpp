@@ -151,47 +151,48 @@ void SendCoinsDialog::on_sendButton_clicked()
     }
 
     // check 'send' password
-    bool passwordCheckSuccess = false;
-
-    QDialog dialogCheckPasswordSend(this);
-    QLabel label("Enter you password for send coins");
-    QPushButton btnOk("Ok");
-    QPushButton btnCancel("Cancel");
-
-    QLineEdit lineEdit;
-    lineEdit.setEchoMode(QLineEdit::Password);
-
-    QObject::connect(&btnOk, &QPushButton::clicked, this, [&dialogCheckPasswordSend, &passwordCheckSuccess, &lineEdit]
+    if (model->getOptionsModel() && model->getOptionsModel()->getCheckPasswordOnSendCoins())
     {
-        // check password from line edit
-        if (CheckPasswordFile(lineEdit.text().toStdString()))
-            passwordCheckSuccess = true;
+        bool passwordCheckSuccess = false;
 
-        dialogCheckPasswordSend.close();
-    });
+        QDialog dialogCheckPasswordSend(this);
+        QLabel label("Enter you password for send coins");
+        QPushButton btnOk("Ok");
+        QPushButton btnCancel("Cancel");
 
-    QObject::connect(&btnCancel, &QPushButton::clicked, this, [&dialogCheckPasswordSend, &passwordCheckSuccess]
-    {
-        passwordCheckSuccess = false;
+        QLineEdit lineEdit;
+        lineEdit.setEchoMode(QLineEdit::Password);
 
-        dialogCheckPasswordSend.close();
-    });
+        QObject::connect(&btnOk, &QPushButton::clicked, this, [&]
+        {
+            if (lineEdit.text() == model->getOptionsModel()->getCheckPasswordOnSendCoinsValue())
+                passwordCheckSuccess = true;
 
-    QVBoxLayout layoutV;
-    QHBoxLayout layoutH;
-    layoutH.addWidget(&btnOk);
-    layoutH.addWidget(&btnCancel);
-    layoutV.addWidget(&label);
-    layoutV.addWidget(&lineEdit);
-    layoutV.addLayout(&layoutH);
+            dialogCheckPasswordSend.close();
+        });
 
-    dialogCheckPasswordSend.setLayout(&layoutV);
-    dialogCheckPasswordSend.exec();
+        QObject::connect(&btnCancel, &QPushButton::clicked, this, [&dialogCheckPasswordSend, &passwordCheckSuccess]
+        {
+            passwordCheckSuccess = false;
+            dialogCheckPasswordSend.close();
+        });
 
-    if (false == passwordCheckSuccess)
-    {
-        fNewRecipientAllowed = true;
-        return;
+        QVBoxLayout layoutV;
+        QHBoxLayout layoutH;
+        layoutH.addWidget(&btnOk);
+        layoutH.addWidget(&btnCancel);
+        layoutV.addWidget(&label);
+        layoutV.addWidget(&lineEdit);
+        layoutV.addLayout(&layoutH);
+
+        dialogCheckPasswordSend.setLayout(&layoutV);
+        dialogCheckPasswordSend.exec();
+
+        if (!passwordCheckSuccess)
+        {
+            fNewRecipientAllowed = true;
+            return;
+        }
     }
 
     QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm send coins"),

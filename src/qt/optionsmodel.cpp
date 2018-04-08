@@ -47,6 +47,8 @@ void OptionsModel::Init()
     nTransactionFee = settings.value("nTransactionFee").toLongLong();
     nReserveBalance = settings.value("nReserveBalance").toLongLong();
     language = settings.value("language", "").toString();
+    fCheckPasswordOnSendCoins = settings.value("fCheckPasswordOnSendCoins", false).toBool();
+    sCheckPasswordOnSendCoinsValue = settings.value("sCheckPasswordOnSendCoinsValue", "").toString();
 
     // These are shared with core Bitcoin; we want
     // command-line options to override the GUI settings:
@@ -80,6 +82,10 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("fUseUPnP", GetBoolArg("-upnp", true));
         case MinimizeOnClose:
             return QVariant(fMinimizeOnClose);
+        case CheckPasswordOnSendCoins:
+            return settings.value("fCheckPasswordOnSendCoins", false);
+        case CheckPasswordOnSendCoinsValue:
+            return settings.value("sCheckPasswordOnSendCoinsValue", "");
         case ProxyUse:
             return settings.value("fUseProxy", false);
         case ProxyIP: {
@@ -140,6 +146,14 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case MinimizeOnClose:
             fMinimizeOnClose = value.toBool();
             settings.setValue("fMinimizeOnClose", fMinimizeOnClose);
+            break;
+        case CheckPasswordOnSendCoins:
+            fCheckPasswordOnSendCoins = value.toBool();
+            settings.setValue("fCheckPasswordOnSendCoins", fCheckPasswordOnSendCoins);
+            break;
+        case CheckPasswordOnSendCoinsValue:
+            sCheckPasswordOnSendCoinsValue = value.toString();
+            settings.setValue("sCheckPasswordOnSendCoinsValue", sCheckPasswordOnSendCoinsValue);
             break;
         case ProxyUse:
             settings.setValue("fUseProxy", value.toBool());
@@ -246,4 +260,20 @@ int OptionsModel::getDisplayUnit()
 bool OptionsModel::getDisplayAddresses()
 {
     return bDisplayAddresses;
+}
+
+bool OptionsModel::getCheckPasswordOnSendCoins()
+{
+    return fCheckPasswordOnSendCoins;
+}
+
+QString OptionsModel::getCheckPasswordOnSendCoinsValue()
+{
+    return sCheckPasswordOnSendCoinsValue;
+}
+
+bool OptionsModel::setCheckPasswordOnSendCoinsValue(const QString & value)
+{
+    QModelIndex index = this->index(OptionsModel::CheckPasswordOnSendCoinsValue);
+    return this->setData(index, QVariant(value), Qt::EditRole);
 }

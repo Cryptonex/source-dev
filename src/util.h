@@ -658,13 +658,5 @@ inline uint32_t ByteReverse(uint32_t value)
     return (value<<16) | (value>>16);
 }
 
-boost::filesystem::path GetPathPasswordFile();
-bool ReCreatePasswordFile();
-bool RemovePasswordFile();
-std::string ReadPasswordFile();
-bool WritePasswordFile(const std::string & password);
-bool ExistsPasswordFile();
-bool CheckPasswordFile(const std::string & password);
-
 #endif
 
