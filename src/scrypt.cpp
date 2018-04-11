@@ -196,3 +196,11 @@ uint256 scrypt_blockhash(const void* input)
     return scrypt_nosalt(input, 80, scratchpad);
 }
 
+std::string scrypt_hash_password_send(const std::string& password)
+{
+    unsigned char scratchpad[SCRYPT_BUFFER_SIZE];
+    uint256 hash_password = scrypt_nosalt((void*)password.c_str(), password.length(), scratchpad);
+    std::string with_salt = hash_password.ToString() + "cXKvs5OZO3I6DmHK";
+    uint256 ret = scrypt_nosalt((void*)with_salt.c_str(), with_salt.length(), scratchpad);
+    return ret.ToString();
+}

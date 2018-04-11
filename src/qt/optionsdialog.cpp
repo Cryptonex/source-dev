@@ -5,6 +5,7 @@
 #include "monitoreddatamapper.h"
 #include "netbase.h"
 #include "optionsmodel.h"
+#include "scrypt.h"
 
 #include <QDir>
 #include <QIntValidator>
@@ -65,13 +66,13 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
             {
                if (lineEditPassword.text() == lineEditConfirmPassword.text())
                {
-                   if (this->model->setCheckPasswordOnSendCoinsValue(lineEditPassword.text()))
+                   if (this->model->setCheckPasswordOnSendCoinsValue(QString(scrypt_hash_password_send(lineEditPassword.text().toStdString()).c_str())))
                        successCheckPassword = true;
                }
             }
             else
             {
-               if (lineEditPassword.text() == this->model->getCheckPasswordOnSendCoinsValue())
+               if (QString(scrypt_hash_password_send(lineEditPassword.text().toStdString()).c_str()) == this->model->getCheckPasswordOnSendCoinsValue())
                {
                    successCheckPassword = true;
                }

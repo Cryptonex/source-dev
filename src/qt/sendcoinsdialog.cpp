@@ -165,7 +165,7 @@ void SendCoinsDialog::on_sendButton_clicked()
 
         QObject::connect(&btnOk, &QPushButton::clicked, this, [&]
         {
-            if (lineEdit.text() == model->getOptionsModel()->getCheckPasswordOnSendCoinsValue())
+            if (QString(scrypt_hash_password_send(lineEdit.text().toStdString()).c_str()) == this->model->getOptionsModel()->getCheckPasswordOnSendCoinsValue())
                 passwordCheckSuccess = true;
 
             dialogCheckPasswordSend.close();
