@@ -51,6 +51,8 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
 
         QDialog dialogCheckPasswordSend(this);
         QLabel label("Enter you password for send coins");
+        QLabel labelPassword("Password");
+        QLabel labelPasswordConfirm("Confirm password");
         QPushButton btnOk("Ok");
         QPushButton btnCancel("Cancel");
 
@@ -69,6 +71,11 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
                    if (this->model->setCheckPasswordOnSendCoinsValue(QString(scrypt_hash_password_send(lineEditPassword.text().toStdString()).c_str())))
                        successCheckPassword = true;
                }
+               else
+                   QMessageBox::question(this, tr("Password check send coins"),
+                                          tr("password not equal confirm password"),
+                          QMessageBox::Yes,
+                          QMessageBox::Yes);
             }
             else
             {
@@ -76,6 +83,11 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
                {
                    successCheckPassword = true;
                }
+               else
+                   QMessageBox::question(this, tr("Password check send coins"),
+                                          tr("password not valid"),
+                          QMessageBox::Yes,
+                          QMessageBox::Yes);
             }
             dialogCheckPasswordSend.close();
         });
@@ -90,9 +102,13 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
         layoutH.addWidget(&btnOk);
         layoutH.addWidget(&btnCancel);
         layoutV.addWidget(&label);
+        layoutV.addWidget(&labelPassword);
         layoutV.addWidget(&lineEditPassword);
         if (enableCheckPassword)
+        {
+            layoutV.addWidget(&labelPasswordConfirm);
             layoutV.addWidget(&lineEditConfirmPassword);
+        }
         layoutV.addLayout(&layoutH);
 
         dialogCheckPasswordSend.setLayout(&layoutV);
