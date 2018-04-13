@@ -72,10 +72,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
                        successCheckPassword = true;
                }
                else
-                   QMessageBox::question(this, tr("Password check send coins"),
-                                          tr("password not equal confirm password"),
-                          QMessageBox::Yes,
-                          QMessageBox::Yes);
+                   QMessageBox::warning(this, tr("Password check send coins"), tr("password not equal confirm password"), QMessageBox::Close, QMessageBox::Close);
             }
             else
             {
@@ -84,10 +81,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
                    successCheckPassword = true;
                }
                else
-                   QMessageBox::question(this, tr("Password check send coins"),
-                                          tr("password not valid"),
-                          QMessageBox::Yes,
-                          QMessageBox::Yes);
+                   QMessageBox::warning(this, tr("Password check send coins"), tr("password not valid"), QMessageBox::Close, QMessageBox::Close);
             }
             dialogCheckPasswordSend.close();
         });
