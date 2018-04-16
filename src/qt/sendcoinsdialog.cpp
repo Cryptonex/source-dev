@@ -190,6 +190,7 @@ void SendCoinsDialog::on_sendButton_clicked()
 
         if (!passwordCheckSuccess)
         {
+            QMessageBox::warning(this, tr("Password check send coins"), tr("password not valid"), QMessageBox::Close, QMessageBox::Close);
             fNewRecipientAllowed = true;
             return;
         }
