@@ -156,9 +156,9 @@ void SendCoinsDialog::on_sendButton_clicked()
         bool passwordCheckSuccess = false;
 
         QDialog dialogCheckPasswordSend(this);
-        QLabel label("Enter you password for send coins");
-        QPushButton btnOk("Ok");
-        QPushButton btnCancel("Cancel");
+        QLabel label(tr("Enter you password for send coins"));
+        QPushButton btnOk(tr("Ok"));
+        QPushButton btnCancel(tr("Cancel"));
 
         QLineEdit lineEdit;
         lineEdit.setEchoMode(QLineEdit::Password);
@@ -190,7 +190,7 @@ void SendCoinsDialog::on_sendButton_clicked()
 
         if (!passwordCheckSuccess)
         {
-            QMessageBox::warning(this, tr("Password check send coins"), tr("password not valid"), QMessageBox::Close, QMessageBox::Close);
+            QMessageBox::warning(this, tr("Password check send coins"), tr("Password not valid"), QMessageBox::Close, QMessageBox::Close);
             fNewRecipientAllowed = true;
             return;
         }

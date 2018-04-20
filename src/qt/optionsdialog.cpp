@@ -50,11 +50,11 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
         bool successCheckPassword = false;
 
         QDialog dialogCheckPasswordSend(this);
-        QLabel label("Enter you password for send coins");
-        QLabel labelPassword("Password");
-        QLabel labelPasswordConfirm("Confirm password");
-        QPushButton btnOk("Ok");
-        QPushButton btnCancel("Cancel");
+        QLabel label(tr("Enter you password for send coins"));
+        QLabel labelPassword(tr("Password"));
+        QLabel labelPasswordConfirm(tr("Confirm password"));
+        QPushButton btnOk(tr("Ok"));
+        QPushButton btnCancel(tr("Cancel"));
 
         QLineEdit lineEditPassword;
         lineEditPassword.setEchoMode(QLineEdit::Password);
@@ -72,7 +72,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
                        successCheckPassword = true;
                }
                else
-                   QMessageBox::warning(this, tr("Password check send coins"), tr("password not equal confirm password"), QMessageBox::Close, QMessageBox::Close);
+                   QMessageBox::warning(this, tr("Password check send coins"), tr("Password not equal confirm password"), QMessageBox::Close, QMessageBox::Close);
             }
             else
             {
@@ -81,7 +81,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
                    successCheckPassword = true;
                }
                else
-                   QMessageBox::warning(this, tr("Password check send coins"), tr("password not valid"), QMessageBox::Close, QMessageBox::Close);
+                   QMessageBox::warning(this, tr("Password check send coins"), tr("Password not valid"), QMessageBox::Close, QMessageBox::Close);
             }
             dialogCheckPasswordSend.close();
         });
